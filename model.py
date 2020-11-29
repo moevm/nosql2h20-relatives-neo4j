@@ -21,8 +21,9 @@ class App:
     def get_family_graph_nodes(self, limit):
         with self.driver.session() as session:
             query = (
-                "MATCH p=() - [r:DirectRelative]->() "
-                "RETURN p LIMIT %i " % limit
+                "MATCH p=() - [r: %s]->() "
+                "RETURN p LIMIT %i " % (self.relativeRelation,
+                                        limit)
             )
             res = session.run(query)
             family = []
