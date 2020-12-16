@@ -9,7 +9,8 @@ class App:
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
         self.label = None
-        self.relativeRelation = "DirectRelative"
+        # self.relativeRelation = "DirectRelative"
+        self.relativeRelation = "KNOWS"
 
     def close(self):
         # Don't forget to close the driver connection when you are finished with it
@@ -17,6 +18,22 @@ class App:
 
     def set_label(self, label):
         self.label = label
+
+    def get_database(self):
+        with self.driver.session() as session:
+            query = (
+                "MATCH (n) RETURN n"
+            )
+            result = session.run(query).data()
+            family = []
+            try:
+                for n in result:
+                    family.append(n['n'])
+            except ServiceUnavailable as exception:
+                logging.error("{query} raised an error: \n {exception}".format(
+                    query=query, exception=exception))
+                raise
+            return family
 
     def get_family_graph_nodes(self, limit):
         with self.driver.session() as session:
@@ -34,7 +51,7 @@ class App:
                             family.append(
                                 {
                                     b["id"]: [
-                                        b["firstName"],
+                                        b["name"],
                                         b["lastName"],
                                         b["middleName"],
                                         b["bornDate"],
@@ -49,14 +66,14 @@ class App:
                 raise
             return family
 
-    def create_node(self, firstName, lastName, middleName, bornDate, socialStatus):
+    def create_node(self, name, lastName, middleName, bornDate, socialStatus):
         with self.driver.session() as session:
             query = (
-                "CREATE (n:%s {firstName: $fn, lastName: $ln, middleName: $mn, "
+                "CREATE (n:%s {name: $fn, lastName: $ln, middleName: $mn, "
                 "bornDate: $bd, socialStatus: $ss}) "
                 "SET n.id = id(n) " % self.label
             )
-            session.run(query, fn=firstName, ln=lastName, mn=middleName,
+            session.run(query, fn=name, ln=lastName, mn=middleName,
                         bd=bornDate, ss=socialStatus)
 
     def remove_node(self, nodeId):
