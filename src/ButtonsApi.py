@@ -1,4 +1,4 @@
-from PyQt5 import uic, QtWidgets
+from PyQt5 import uic, QtWidgets, QtCore
 from model import App
 
 Form, _ = uic.loadUiType("gui/createNode.ui")
@@ -12,11 +12,14 @@ password = "ybrbnfbugaga1999"
 
 
 class NodeCreator(QtWidgets.QMainWindow, Form):
-    def __init__(self):
+    def __init__(self, main_ui):
         super(NodeCreator, self).__init__()
         self.setupUi(self)
+        self.move(main_ui.rect().center())
+        self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
         self.btnCreateNode.clicked.connect(self.createNode)
 
+        self.main_ui = main_ui
         self.lastName = ''
         self.name = ''
         self.middleName = ''
@@ -36,6 +39,7 @@ class NodeCreator(QtWidgets.QMainWindow, Form):
             # отправляем в БД
             self.app.create_node(self.name, self.lastName, self.middleName, self.bornDate, self.status)
             self.close()
+            self.main_ui.displayDatabase()
         else:
             QtWidgets.QMessageBox.warning(self, 'Предупреждение', 'Для добавления узла необходимо заполнить все поля')
 
@@ -62,3 +66,18 @@ class NodeDeleter:
 
     def deleteNode(self, node_id):
         self.app.remove_node(node_id)
+
+
+class RelationsApi:
+    def __init__(self):
+        self.app = App(url, user, password)
+        self.app.set_label("Person")
+
+    def checkRelation(self, id1, id2):
+        return self.app.get_relation(int(id1), int(id2))
+
+    def createRelation(self, id1, id2):
+        return self.app.create_relation(int(id1), int(id2))
+
+    def deleteRelation(self, id1, id2):
+        self.app.remove_relation(int(id1), int(id2))

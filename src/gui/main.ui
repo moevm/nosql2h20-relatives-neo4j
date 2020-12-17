@@ -176,6 +176,11 @@
          <string>Соц. статус</string>
         </property>
        </column>
+       <column>
+        <property name="text">
+         <string>Дети (ID)</string>
+        </property>
+       </column>
       </widget>
      </item>
     </layout>
