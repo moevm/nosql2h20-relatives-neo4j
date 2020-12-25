@@ -81,3 +81,12 @@ class RelationsApi:
 
     def deleteRelation(self, id1, id2):
         self.app.remove_relation(int(id1), int(id2))
+
+
+class ImportExport:
+    def __init__(self):
+        self.app = App(url, user, password)
+        # self.app.set_label("Person")
+
+    def export_json(self):
+        return self.app.get_json()

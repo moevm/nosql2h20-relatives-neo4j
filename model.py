@@ -1,7 +1,8 @@
 from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable
-
+import os
 import logging
+import json
 
 
 class App:
@@ -128,3 +129,15 @@ class App:
                 "DELETE r " % (self.label, self.relativeRelation, self.label)
             )
             session.run(query, id1=nodeIdOne, id2=nodeIdTwo)
+
+    # скачать apoc в папку neo4j/plugins
+    # установить значения в true для эксорта/импорта в neo4j.conf
+    def get_json(self):
+        with self.driver.session() as session:
+            # экспорт в папку tmp
+            query = (
+                "CALL apoc.export.json.all(\"/tmp/all.json\",{})"
+            )
+            os.system('cp /tmp/all.json ./')
+            print(json.dumps(session.run(query).data()))
+            return session.run(query).data()

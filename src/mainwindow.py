@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from ButtonsApi import NodeCreator, DatabaseGetter, NodeDeleter, RelationsApi
+from ButtonsApi import NodeCreator, DatabaseGetter, NodeDeleter, RelationsApi, ImportExport
 
 Form, _ = uic.loadUiType("gui/main.ui")
 
@@ -22,6 +22,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.btnDeleteNode.clicked.connect(self.deleteNode)
         self.btnCreateRelations.clicked.connect(self.createRelation)
         self.btnDeleteRelations.clicked.connect(self.deleteRelation)
+        self.btnExport.clicked.connect(self.export_json)
 
         # properties
         self.database = None
@@ -182,6 +183,10 @@ class Ui(QtWidgets.QMainWindow, Form):
             selected_nodes[self.table.item(i.row(), 0).text()] = i.text()
 
         return list(selected_nodes.keys())
+
+    def export_json(self):
+        data = ImportExport().export_json()
+        print(data)
 
 
 if __name__ == '__main__':
