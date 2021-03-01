@@ -70,6 +70,8 @@ class App:
                                         b["lastName"],
                                         b["middleName"],
                                         b["bornDate"],
+                                        b["sex"],
+                                        b["educ"],
                                         b["socialStatus"]
                                     ]
                                 }
@@ -81,15 +83,15 @@ class App:
                 raise
             return family
 
-    def create_node(self, name, lastName, middleName, bornDate, socialStatus):
+    def create_node(self, name, lastName, middleName, bornDate, sex, educ, socialStatus):
         with self.driver.session() as session:
             query = (
                 "CREATE (n:%s {name: $fn, lastName: $ln, middleName: $mn, "
-                "bornDate: $bd, socialStatus: $ss}) "
+                "bornDate: $bd, sex: $sx, educ: $ed, socialStatus: $ss}) "
                 "SET n.id = id(n) " % self.label
             )
             session.run(query, fn=name, ln=lastName, mn=middleName,
-                        bd=bornDate, ss=socialStatus)
+                        bd=bornDate, sx=sex, ed=educ, ss=socialStatus)
 
     def remove_node(self, nodeId):
         with self.driver.session() as session:
