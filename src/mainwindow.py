@@ -23,6 +23,8 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.btnCreateRelations.clicked.connect(self.createRelation)
         self.btnDeleteRelations.clicked.connect(self.deleteRelation)
         self.btnExport.clicked.connect(self.export_json)
+        self.btnStatistics.clicked.connect(self.displayStatistics)
+        
 
         # properties
         self.database = None
@@ -41,6 +43,11 @@ class Ui(QtWidgets.QMainWindow, Form):
             return
         self.writeDatabaseInTable()
 
+    # button 'Статистика'
+    def displayStatistics(self):
+        self.displayDatabase()
+    
+        
     # button 'Создать узел'
     def createNode(self):
         self.nodeCreator = NodeCreator(self)
