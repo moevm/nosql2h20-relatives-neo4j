@@ -24,6 +24,8 @@ class NodeCreator(QtWidgets.QMainWindow, Form):
         self.name = ''
         self.middleName = ''
         self.bornDate = ''
+        self.sex = ''
+        self.educ = ''
         self.status = ''
         self.app = App(url, user, password)
         self.app.set_label("Person")
@@ -33,18 +35,20 @@ class NodeCreator(QtWidgets.QMainWindow, Form):
         self.name = self.lineName.text()
         self.middleName = self.lineMiddleName.text()
         self.bornDate = self.dateEdit.text()
+        self.sex = self.lineSex.text()
+        self.educ = self.lineEduc.text()
         self.status = self.lineStatus.text()
 
         if self.checkInput():
             # отправляем в БД
-            self.app.create_node(self.name, self.lastName, self.middleName, self.bornDate, self.status)
+            self.app.create_node(self.name, self.lastName, self.middleName, self.bornDate, self.sex, self.educ, self.status)
             self.close()
             self.main_ui.displayDatabase()
         else:
             QtWidgets.QMessageBox.warning(self, 'Предупреждение', 'Для добавления узла необходимо заполнить все поля')
 
     def checkInput(self):
-        if self.lastName == '' or self.name == '' or self.middleName == '' or self.status == '':
+        if self.lastName == '' or self.name == '' or self.middleName == '' or self.sex == '' or  self.educ == '' or self.status == '':
             return False
         else:
             return True
