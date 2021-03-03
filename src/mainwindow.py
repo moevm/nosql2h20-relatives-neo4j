@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from ButtonsApi import NodeCreator, DatabaseGetter, NodeDeleter, RelationsApi, ImportExport
+from ButtonsApi import NodeCreator, DatabaseGetter, NodeDeleter, RelationsApi, ImportExport, Stats
 
 Form, _ = uic.loadUiType("gui/main.ui")
 
@@ -23,8 +23,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.btnCreateRelations.clicked.connect(self.createRelation)
         self.btnDeleteRelations.clicked.connect(self.deleteRelation)
         self.btnExport.clicked.connect(self.export_json)
-        self.btnStatistics.clicked.connect(self.displayStatistics)
-        
+        self.btnStats.clicked.connect(self.getStats)
 
         # properties
         self.database = None
@@ -32,6 +31,7 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.nodeCreator = None
         self.nodeDeleter = None
         self.relationsApi = None
+        self.stats = None
 
         # view database
         self.displayDatabase()
@@ -44,10 +44,10 @@ class Ui(QtWidgets.QMainWindow, Form):
         self.writeDatabaseInTable()
 
     # button 'Статистика'
-    def displayStatistics(self):
-        self.displayDatabase()
-    
-        
+    def getStats(self):
+        self.stats = Stats(self)
+        self.stats.show()
+
     # button 'Создать узел'
     def createNode(self):
         self.nodeCreator = NodeCreator(self)

@@ -1,7 +1,8 @@
 from PyQt5 import uic, QtWidgets, QtCore
 from model import App
 
-Form, _ = uic.loadUiType("gui/createNode.ui")
+Form, _  = uic.loadUiType("gui/createNode.ui")
+Form1, _ = uic.loadUiType("gui/stats.ui")
 
 scheme = "bolt"  # Connecting to Aura, use the "neo4j+s" URI scheme
 host_name = "127.0.0.1"
@@ -24,8 +25,6 @@ class NodeCreator(QtWidgets.QMainWindow, Form):
         self.name = ''
         self.middleName = ''
         self.bornDate = ''
-        self.sex = ''
-        self.educ = ''
         self.status = ''
         self.app = App(url, user, password)
         self.app.set_label("Person")
@@ -35,23 +34,44 @@ class NodeCreator(QtWidgets.QMainWindow, Form):
         self.name = self.lineName.text()
         self.middleName = self.lineMiddleName.text()
         self.bornDate = self.dateEdit.text()
-        self.sex = self.lineSex.text()
-        self.educ = self.lineEduc.text()
         self.status = self.lineStatus.text()
 
         if self.checkInput():
             # отправляем в БД
-            self.app.create_node(self.name, self.lastName, self.middleName, self.bornDate, self.sex, self.educ, self.status)
+            self.app.create_node(self.name, self.lastName, self.middleName, self.bornDate, self.status)
             self.close()
             self.main_ui.displayDatabase()
         else:
             QtWidgets.QMessageBox.warning(self, 'Предупреждение', 'Для добавления узла необходимо заполнить все поля')
 
     def checkInput(self):
-        if self.lastName == '' or self.name == '' or self.middleName == '' or self.sex == '' or  self.educ == '' or self.status == '':
+        if self.lastName == '' or self.name == '' or self.middleName == '' or self.status == '':
             return False
         else:
             return True
+
+
+class Stats(QtWidgets.QWidget, Form1):
+    def __init__(self, stats_ui):
+        super(Stats, self).__init__()
+        self.setupUi(self)
+        self.stats_ui = stats_ui
+        self.btnPieChart.clicked.connect(self.showPieChart)
+
+        self.cmbPol.addItem('Мужской')
+        self.cmbPol.addItem('Женский')
+
+        self.cmbObrazovanie.addItem('Высшее')
+        self.cmbObrazovanie.addItem('Средне-специальное')
+        self.cmbObrazovanie.addItem('Среднее')
+        self.cmbObrazovanie.addItem('Нет')
+
+        self.cmbStatus.addItem('Студент')
+        self.cmbStatus.addItem('Рабочий')
+        self.cmbStatus.addItem('-')
+
+    def showPieChart(self):
+        print('pokazal pirog')
 
 
 class DatabaseGetter:
